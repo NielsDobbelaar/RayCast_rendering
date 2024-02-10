@@ -33,7 +33,7 @@ A little project playing around with 3D rendering using raycasting like doom and
    ```
 2. open it in the Processing App and run it in there or run it via the command-line
    ```sh
-   processing-java --sketch="Full-Path-To-File/RayCast_rendering
+   processing-java --sketch="Full-Path-To-File/RayCast_rendering --run
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
