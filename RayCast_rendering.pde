@@ -32,6 +32,25 @@ int[][] map = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ,1}
 };
 
+
+int textureSize = 8;
+int[][] textureMap = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {0, 1, 0, 0, 0, 1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {0, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {0, 1, 0, 0, 0, 1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
+
+color[] colors = {color(255, 241, 232), color(194, 195, 199)};
+
+int[][] colorMap = {{255, 136, 77}, {153, 153, 153}};
+
 void settings(){
     size(int(windowSize)*2, int(windowSize));    
 }
@@ -41,6 +60,17 @@ void setup(){
 
     sizeMultiplier = windowSize / map.length;
     incrementAngle = fov / windowSize;
+}
+
+void drawTexture(int x, int wallHeight, int texturePositionX, int[][] c) {
+    float yIncrementer = (wallHeight * 2) / textureSize;
+    float y = windowSize/2 - wallHeight;
+
+    for(int i = 0; i < textureSize; i++) {
+        stroke(c[textureMap[i][texturePositionX]][0], c[textureMap[i][texturePositionX]][1], c[textureMap[i][texturePositionX]][2]);
+        line(x, y, x, y+ (yIncrementer));
+        y += yIncrementer;
+    }
 }
 
 void rayCasting(){
@@ -73,14 +103,23 @@ void rayCasting(){
 
         int wallHeight = floor(height/2 / distance);
 
-        float brightness = map(distance, 0, map.length + 2, 50, 255);
+        int texturePositionX = floor((textureSize * (rayX + rayY)) % textureSize);
+
+        float brightness = map(distance, 0, map.length + 2, 1, 0.2);
+
+        int[][] adjustedColors = new int[2][3];
+
+        for(int i = 0; i < adjustedColors.length; i++){
+            for(int j = 0; j < adjustedColors[i].length; j++){
+                adjustedColors[i][j] = floor(colorMap[i][j] * brightness);
+            }
+        }
 
         stroke(70);
         line(rayCount, 0, rayCount, height/2 - wallHeight);
-        stroke(brightness);
-        line(rayCount, height/2 - wallHeight, rayCount, height/2 + wallHeight);
+        drawTexture(rayCount, wallHeight, texturePositionX,  adjustedColors);
         stroke(0, 50, 0);
-        line(rayCount, height/2 + wallHeight, rayCount, height);
+        line(rayCount, height/2 + wallHeight - (wallHeight * 2) / textureSize, rayCount, height);
 
         rayAngle += incrementAngle;
     }
